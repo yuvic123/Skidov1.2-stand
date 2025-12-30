@@ -4,23 +4,31 @@ import io
 import os
 from flask import Flask
 from threading import Thread
+
 app = Flask('')
+
 @app.route('/')
 def home():
     return "Bot is running!"
+
 def run():
     app.run(host='0.0.0.0', port=8080)
+
 def keep_alive():
     t = Thread(target=run)
     t.start()
+
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
+
 ALLOWED_ROLE_ID = 1317228890976161936  
+
 @client.event
 async def on_ready():
     await tree.sync() 
     print(f"Logged in as {client.user}")
+
 @tree.command(name="generate", description="Generate a custom bot script")
 @app_commands.describe(mainusername="Your main Roblox username", prefix="The command prefix (Default is !)")
 @app_commands.checks.cooldown(1, 60.0, key=lambda i: (i.user.id)) 
@@ -56,20 +64,23 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/yuvic123/Skidov1.2-st
     file_data = io.BytesIO(script_template.encode())
     discord_file = discord.File(file_data, filename="script.txt")
 
-    try:
-        await interaction.user.send(content=f"Generated script for **{mainusername}**:", file=discord_file)
-        await interaction.response.send_message(f"✅ Check your dms boy!", ephemeral=True)
-    except discord.Forbidden:
-        await interaction.response.send_message("❌ I cant dm you maybe open your dms.", ephemeral=True)
+    await interaction.response.send_message(
+        content=f"✅ Done {interaction.user.mention}! Script for `{mainusername}` generated below:", 
+        file=discord_file
+    )
+
 @tree.error
 async def on_app_command_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
     if isinstance(error, app_commands.CommandOnCooldown):
         await interaction.response.send_message(f"⏳ Wait **{error.retry_after:.1f}s**.", ephemeral=True)
     else:
         print(f"Error: {error}")
+
 keep_alive()
-token = os.getenv("DISCORD_TOKEN") # Gets token from Render settings
+token = os.getenv("DISCORD_TOKEN") 
+
 if token:
     client.run(token)
 else:
-    print("fuck")
+    print("Error: DISCORD_TOKEN environment variable is missing.")
+
