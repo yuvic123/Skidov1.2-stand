@@ -41,24 +41,28 @@ async def generate(interaction: discord.Interaction, mainusername: str, prefix: 
         return
 
     script_template = f"""getgenv().Owner = "{mainusername}"
-getgenv().Bot = {{
-    Config = {{}},
-    State = {{}},
-    Runtime = {{}}
-}}
-Bot.Config = {{
-    Command = {{ Prefix = "{prefix}" }},
-    Guns = {{ Enabled = true, List = {{ "aug", "rifle" }} }},
-    Strafe = {{ Enabled = true, Mode = "random2", Distance = 12, Speed = 1.25 }},
-    AntiStomp = {{ Enabled = true, Delay = 0.15 }},
-    AutoArmor = {{ Enabled = true, Threshold = 120, CheckInterval = 0.5 }},
-    Dance = {{ Enabled = true, Default = "Yung" }},
-    AutoMask = {{ Enabled = true, Type = "Ninja Mask"}},
-    FPS = {{ 
+ggetgenv().Bot = {
+    Config = {},
+    State = {},
+    Runtime = {}
+}
+Bot.Config = {
+    Command = { Prefix = "!" },
+    Guns = { Enabled = true, List = { "aug", "rifle" } },
+    Strafe = { Enabled = true, Mode = "random2", Distance = 12, Speed = 1.25 },
+    AntiStomp = { Enabled = true, Delay = 0.15 },
+    AutoArmor = { Enabled = true, Threshold = 120, CheckInterval = 0.5 },
+    Dance = { Enabled = true, Default = "Floss" },
+    AutoMask = { Enabled = false, Type = "Ninja Mask"},
+    Skybox = { 
+        Enabled = true, 
+        Default = "Neptune" -- "Neptune" | "Purple Nebula" | "Minecraft" | "Night Sky" | "Aesthetic Night"
+    },
+    FPS = { 
         Cap = 240, 
         WhiteScreen = false
-    }}
-}}
+    }
+}
 loadstring(game:HttpGet("https://raw.githubusercontent.com/yuvic123/Skidov1.2-stand/refs/heads/main/Skido-Sniper-Bot"))()"""
 
     file_data = io.BytesIO(script_template.encode())
