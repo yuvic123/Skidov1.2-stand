@@ -41,7 +41,7 @@ async def generate(interaction: discord.Interaction, mainusername: str, prefix: 
         return
 
     script_template = f"""getgenv().Owner = "{mainusername}"
-ggetgenv().Bot = {
+getgenv().Bot = {
     Config = {},
     State = {},
     Runtime = {}
