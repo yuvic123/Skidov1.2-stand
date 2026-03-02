@@ -5,6 +5,7 @@ import os
 from flask import Flask
 from threading import Thread
 
+
 app = Flask('')
 
 @app.route('/')
@@ -33,38 +34,40 @@ async def on_ready():
 @app_commands.describe(mainusername="Your main Roblox username", prefix="The command prefix (Default is !)")
 @app_commands.checks.cooldown(1, 60.0, key=lambda i: (i.user.id)) 
 async def generate(interaction: discord.Interaction, mainusername: str, prefix: str = "!"):
-    
+
     has_role = any(role.id == ALLOWED_ROLE_ID for role in interaction.user.roles)
     
     if not has_role:
-        await interaction.response.send_message("❌ Error: You do not have permission.", ephemeral=True)
+        await interaction.response.send_message("❌ Error: You do not have permission to use this command.", ephemeral=True)
         return
 
+    
     script_template = f"""getgenv().Owner = "{mainusername}"
-getgenv().Bot = {
-    Config = {},
-    State = {},
-    Runtime = {}
-}
-Bot.Config = {
-    Command = { Prefix = "{prefix}" },
-    Guns = { Enabled = true, List = { "aug", "rifle" } },
-    Strafe = { Enabled = true, Mode = "random2", Distance = 12, Speed = 1.25 },
-    AntiStomp = { Enabled = true, Delay = 0.15 },
-    AutoArmor = { Enabled = true, Threshold = 120, CheckInterval = 0.5 },
-    Dance = { Enabled = true, Default = "Floss" },
-    AutoMask = { Enabled = false, Type = "Ninja Mask"},
-    Skybox = { 
+getgenv().Bot = {{
+    Config = {{}},
+    State = {{}},
+    Runtime = {{}}
+}}
+Bot.Config = {{
+    Command = {{ Prefix = "{prefix}" }},
+    Guns = {{ Enabled = true, List = {{ "aug", "rifle" }} }},
+    Strafe = {{ Enabled = true, Mode = "random2", Distance = 12, Speed = 1.25 }},
+    AntiStomp = {{ Enabled = true, Delay = 0.15 }},
+    AutoArmor = {{ Enabled = true, Threshold = 120, CheckInterval = 0.5 }},
+    Dance = {{ Enabled = true, Default = "Floss" }},
+    AutoMask = {{ Enabled = false, Type = "Ninja Mask"}},
+    Skybox = {{ 
         Enabled = true, 
-        Default = "Neptune" -- "Neptune" | "Purple Nebula" | "Minecraft" | "Night Sky" | "Aesthetic Night"
-    },
-    FPS = { 
+        Default = "Neptune"
+    }},
+    FPS = {{ 
         Cap = 240, 
         WhiteScreen = false
-    }
-}
+    }}
+}}
 loadstring(game:HttpGet("https://raw.githubusercontent.com/yuvic123/Skidov1.2-stand/refs/heads/main/Skido-Sniper-Bot"))()"""
 
+    # Create the file in memory
     file_data = io.BytesIO(script_template.encode())
     discord_file = discord.File(file_data, filename="script.txt")
 
@@ -76,15 +79,15 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/yuvic123/Skidov1.2-st
 @tree.error
 async def on_app_command_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
     if isinstance(error, app_commands.CommandOnCooldown):
-        await interaction.response.send_message(f"⏳ Wait **{error.retry_after:.1f}s**.", ephemeral=True)
+        await interaction.response.send_message(f"⏳ Cooldown active. Wait **{error.retry_after:.1f}s**.", ephemeral=True)
     else:
         print(f"Error: {error}")
 
+# --- Start Bot ---
 keep_alive()
 token = os.getenv("DISCORD_TOKEN") 
 
 if token:
     client.run(token)
 else:
-    print("Error: DISCORD_TOKEN environment variable is missing.")
-
+    print("Error: DISCORD_TOKEN environment variable is missing. Check your Secrets/Environment variables.")
