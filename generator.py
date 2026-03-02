@@ -47,7 +47,7 @@ getgenv().Bot = {
     Runtime = {}
 }
 Bot.Config = {
-    Command = { Prefix = "!" },
+    Command = { Prefix = "{prefix}" },
     Guns = { Enabled = true, List = { "aug", "rifle" } },
     Strafe = { Enabled = true, Mode = "random2", Distance = 12, Speed = 1.25 },
     AntiStomp = { Enabled = true, Delay = 0.15 },
