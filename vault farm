@@ -1,1 +1,17 @@
-print()
+local TeleportService = game:GetService("TeleportService")
+local Players = game:GetService("Players")
+
+local player = Players.LocalPlayer
+local waitTime = 30 
+
+print("Rejoining in " .. waitTime .. " seconds...")
+task.wait(waitTime)
+
+-- Teleport back to the same place
+local success, errorMessage = pcall(function()
+    TeleportService:Teleport(game.PlaceId, player)
+end)
+
+if not success then
+    warn("Failed to rejoin: " .. errorMessage)
+end
